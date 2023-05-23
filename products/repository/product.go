@@ -14,28 +14,34 @@ func NewProductRepository(db *sql.DB) *ProductRepository {
 	return &ProductRepository{DB: db}
 }
 
-func (r *ProductRepository) GetProduct() ([]models.Product, error) {
+func (r *ProductRepository) GetProduct(name string) ([]models.Product, error) {
 	rows, err := r.DB.Query(`
        SELECT 
-             p.id,
-             p.name,
-             p.price,
-             p.description,
-             p.rating,
-             p.category_id,
-             p.seller_id,
-             p.brand_id,
-             p.image,
-             p.created_at,
-             p.updated_at,
-             c.name AS category_name,
-             s.name AS seller_name,
-             b.name AS brand_name
-           FROM products AS p 
-       	   LEFT JOIN categories AS c ON p.category_id = c.id
-           LEFT JOIN sellers AS s ON p.seller_id = s.id
-       	   LEFT JOIN brands AS b ON p.brand_id = b.id
-	`)
+           p.id,
+			p.name,
+			p.price,
+			p.description,
+			p.rating,
+			p.category_id,
+			p.seller_id,
+			p.brand_id,
+			p.image,
+			p.created_at,
+			p.updated_at,
+			c.name AS category_name,
+			s.name AS seller_name,
+			b.name AS brand_name
+           FROM 
+               products AS p 
+       	   	   LEFT JOIN categories AS c ON p.category_id = c.id
+       		   LEFT JOIN sellers AS s ON p.seller_id = s.id
+       		   LEFT JOIN brands AS b ON p.brand_id = b.id
+       	   WHERE
+       	       p.name ILIKE '%' || $1 || '%' OR 
+       	       c.name ILIKE '%' || $1 || '%' OR
+			   s.name ILIKE '%' || $1 || '%' OR
+			   b.name ILIKE '%' || $1 || '%'
+	`, name)
 
 	if err != nil {
 		log.Printf("failed to query products: %v", err)

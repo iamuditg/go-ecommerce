@@ -1,0 +1,7 @@
+### GET PRODUCT HANDLER
+
+# curl -X GET 'http://localhost:8080/products?search=your_search_term'
+GET http://localhost:8080/products?search=your_search_term
+
+###
+

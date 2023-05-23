@@ -14,8 +14,8 @@ func NewProductService(productRepo *repository.ProductRepository) *ProductServic
 	return &ProductService{ProductRepo: productRepo}
 }
 
-func (s *ProductService) GetProduct() ([]models.Product, error) {
-	products, err := s.ProductRepo.GetProduct()
+func (s *ProductService) GetProduct(name string) ([]models.Product, error) {
+	products, err := s.ProductRepo.GetProduct(name)
 	if err != nil {
 		log.Printf("failed to retreive products from repository: %v", err)
 		return nil, err

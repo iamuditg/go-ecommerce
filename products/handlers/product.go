@@ -18,7 +18,10 @@ func NewProductHandler(productService *services.ProductService) *ProductHandler 
 }
 
 func (h *ProductHandler) GetProductHandler(writer http.ResponseWriter, request *http.Request) {
-	products, err := h.ProductService.GetProduct()
+
+	search := request.URL.Query().Get("search")
+
+	products, err := h.ProductService.GetProduct(search)
 	if err != nil {
 		log.Printf("failed to retreive products from service: %v", err)
 		http.Error(writer, "failed to retrieve products", http.StatusInternalServerError)
