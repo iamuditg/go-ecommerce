@@ -68,7 +68,7 @@ func (h *ProductHandler) CreateProductHandler(writer http.ResponseWriter, reques
 		return
 	}
 
-	writer.WriteHeader(http.StatusCreated)
 	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusCreated)
 	writer.Write(createdProductJSON)
 }

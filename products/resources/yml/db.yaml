@@ -1,5 +1,5 @@
 db:
-  host: localhost
+  host: host.docker.internal
   port: 5432
   user: postgres
   password: 123456
