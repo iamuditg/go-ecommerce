@@ -1,4 +1,4 @@
-package config
+package utils
 
 import (
 	"database/sql"
@@ -51,9 +51,4 @@ func splitStatements(queries string) []string {
 	}
 
 	return statements
-}
-
-func GetDBConnectionString(cfg *Config) string {
-	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName)
 }

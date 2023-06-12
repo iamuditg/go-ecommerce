@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"errors"
+	"time"
+)
 
 type Product struct {
 	ID           int       `json:"ID"`
@@ -17,4 +20,13 @@ type Product struct {
 	CategoryName string    `json:"categoryName"`
 	SellerName   string    `json:"sellerName"`
 	BrandName    string    `json:"brandName"`
+}
+
+func (p *Product) Validation() error {
+	if p.Name == "" {
+		return errors.New("product name is required")
+	} else if p.Price == "" {
+		return errors.New("product price must be greater then zero")
+	}
+	return nil
 }

@@ -81,3 +81,25 @@ func (r *ProductRepository) GetProduct(name string) ([]models.Product, error) {
 	}
 	return products, nil
 }
+
+func (r *ProductRepository) CreateProduct(product *models.Product) (*models.Product, error) {
+	query := "INSERT INTO products (name, price, description, rating, category_id, seller_id, brand_id, image) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id"
+	row := r.DB.QueryRow(query,
+		product.Name,
+		product.Price,
+		product.Description,
+		product.Rating,
+		product.CategoryID,
+		product.SellerID,
+		product.BrandID,
+		product.Image,
+	)
+
+	// Retrieve the inserted product ID
+	err := row.Scan(&product.ID)
+	if err != nil {
+		return nil, err
+	}
+	// You can return the created product if needed
+	return product, nil
+}

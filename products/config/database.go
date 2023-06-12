@@ -1,6 +1,7 @@
 package config
 
 import (
+	"fmt"
 	"github.com/spf13/viper"
 	"log"
 )
@@ -16,9 +17,9 @@ type Config struct {
 func LoadConfig() (*Config, error) {
 	viper.AutomaticEnv()
 
-	viper.SetConfigName("config")
+	viper.SetConfigName("db")
 	viper.SetConfigType("yaml")
-	viper.AddConfigPath("./products/config/")
+	viper.AddConfigPath("./products/resources/yml/")
 
 	err := viper.ReadInConfig()
 	if err != nil {
@@ -34,4 +35,9 @@ func LoadConfig() (*Config, error) {
 	}
 
 	return config, nil
+}
+
+func GetDBConnectionString(cfg *Config) string {
+	return fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		cfg.DBHost, cfg.DBPort, cfg.DBUser, cfg.DBPassword, cfg.DBName)
 }

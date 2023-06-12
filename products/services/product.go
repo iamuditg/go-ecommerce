@@ -22,3 +22,12 @@ func (s *ProductService) GetProduct(name string) ([]models.Product, error) {
 	}
 	return products, nil
 }
+
+func (s *ProductService) CreateProductService(product *models.Product) (*models.Product, error) {
+	// Call the repository to create the product
+	createdProduct, err := s.ProductRepo.CreateProduct(product)
+	if err != nil {
+		return nil, err
+	}
+	return createdProduct, nil
+}

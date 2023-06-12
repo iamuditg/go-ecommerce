@@ -8,6 +8,7 @@ import (
 	"github.com/iamuditg/handlers"
 	"github.com/iamuditg/repository"
 	"github.com/iamuditg/services"
+	"github.com/iamuditg/utils"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 	"log"
@@ -30,7 +31,7 @@ func main() {
 	defer db.Close()
 
 	// Execute the SQL file
-	if err := config.ExecuteSQLFile(db, "products/schema.sql"); err != nil {
+	if err := utils.ExecuteSQLFile(db, "products/schema.sql"); err != nil {
 		log.Fatalf("failed to execute SQL file: %v", err)
 	}
 
@@ -42,8 +43,9 @@ func main() {
 	productService := services.NewProductService(productRepo)
 	productHandler := handlers.NewProductHandler(productService)
 
-	// Register the Http Routes
-	router.HandleFunc("/products", productHandler.GetProductHandler)
+	// Register the Http Routes for Products
+	router.HandleFunc("/products", productHandler.GetProductHandler).Methods(http.MethodGet)
+	router.HandleFunc("/products", productHandler.CreateProductHandler).Methods(http.MethodPost)
 
 	//Start the server
 	port := viper.GetString("port")

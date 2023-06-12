@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"github.com/iamuditg/models"
 	"github.com/iamuditg/services"
 	"log"
 	"net/http"
@@ -36,4 +37,38 @@ func (h *ProductHandler) GetProductHandler(writer http.ResponseWriter, request *
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
 	writer.Write(jsonData)
+}
+
+func (h *ProductHandler) CreateProductHandler(writer http.ResponseWriter, request *http.Request) {
+	// Parse the JSON request body into a handler object
+	var product models.Product
+	err := json.NewDecoder(request.Body).Decode(&product)
+	if err != nil {
+		http.Error(writer, "Failed to decode request body", http.StatusBadRequest)
+		return
+	}
+
+	err = product.Validation()
+	if err != nil {
+		http.Error(writer, "failed to validate the request body", http.StatusBadRequest)
+		return
+	}
+
+	// Call the service to create the product
+	createdProduct, err := h.ProductService.CreateProductService(&product)
+	if err != nil {
+		http.Error(writer, "Failed to create product", http.StatusInternalServerError)
+		return
+	}
+
+	// Convert the Created Product to JSON
+	createdProductJSON, err := json.Marshal(createdProduct)
+	if err != nil {
+		http.Error(writer, "Failed to marshal created product data", http.StatusInternalServerError)
+		return
+	}
+
+	writer.WriteHeader(http.StatusCreated)
+	writer.Header().Set("Content-Type", "application/json")
+	writer.Write(createdProductJSON)
 }
